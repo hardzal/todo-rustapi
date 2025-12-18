@@ -7,10 +7,7 @@ struct Todo {
 
 impl Todo {
     fn new(name: String) -> Todo {
-        Todo {
-            name,
-            done: false,
-        }
+        Todo { name, done: false }
     }
 }
 
@@ -24,7 +21,10 @@ fn main() {
         println!("1. Add Todo");
         println!("2. Show Todos");
         println!("3. Take Action");
-        println!("4. Exit");
+        println!("4. Search todo");
+        println!("5. Delete Todo");
+        println!("6. Delete all todo");
+        println!("7. Exit");
         println!("Choose Menu (1-4): ");
 
         let menu = read_input();
@@ -37,10 +37,13 @@ fn main() {
             }
 
             "2" => {
+                println!("=== Todos ===");
                 show_todo(&todos);
             }
 
             "3" => {
+                println!("=== Take Action ===");
+                show_todo(&todos);
                 println!("Enter todo index to take action: ");
                 let index = read_input();
 
@@ -52,6 +55,18 @@ fn main() {
             }
 
             "4" => {
+                println!("Search todo: ");
+            }
+
+            "5" => {
+                println!("Delete todo: ");
+            }
+
+            "6" => {
+                println!("are you sure to delete all todo (y/n): ");
+            }
+
+            "7" => {
                 println!("See you later!");
                 break;
             }
@@ -61,7 +76,6 @@ fn main() {
             }
         }
     }
-
 }
 
 fn add_todo(list: &mut Vec<Todo>, name: String) {
@@ -75,23 +89,32 @@ fn show_todo(list: &Vec<Todo>) {
         println!("No todos found");
     } else {
         for (index, todo) in list.iter().enumerate() {
-            let status = if todo.done { "[X]" } else {"[ ]"};
+            let status = if todo.done { "[X]" } else { "[ ]" };
             println!("{} {} - {}", index + 1, status, todo.name);
         }
     }
 }
 
 fn take_action(list: &mut Vec<Todo>, index: usize) {
-    if index < list.len() {
-        list[index].done = true;
-        println!("Todo {} marked as done", index + 1);
+    println!("Data todo saat ini adalah: {}", list.len());
+
+    if index > 0 && index <= list.len() {
+        if list[index - 1].done {
+            println!("Todo {} already done", index);
+            return;
+        }
+
+        list[index - 1].done = true;
+        println!("Todo {} marked as done", index);
     } else {
-        println!("Todo {} not found", index + 1);
+        println!("Todo {} not found", index);
     }
 }
 
 fn read_input() -> String {
     let mut input = String::new();
-    io::stdin().read_line(&mut input).expect("Failed to read line");
+    io::stdin()
+        .read_line(&mut input)
+        .expect("Failed to read line");
     input.trim().to_string()
 }
