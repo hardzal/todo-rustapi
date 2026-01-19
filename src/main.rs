@@ -56,14 +56,22 @@ fn main() {
 
             "4" => {
                 println!("Search todo: ");
+                search_todo(&mut todos, read_input().to_string());
             }
 
             "5" => {
                 println!("Delete todo: ");
+                delete_todo(&mut todos, read_input().parse().unwrap());
             }
 
             "6" => {
                 println!("are you sure to delete all todo (y/n): ");
+                let input = read_input();
+                if input.to_lowercase() == "y" {
+                    reset_todo(&mut todos);
+                } else {
+                    println!("Delete all todo canceled");
+                }
             }
 
             "7" => {
@@ -109,6 +117,44 @@ fn take_action(list: &mut Vec<Todo>, index: usize) {
     } else {
         println!("Todo {} not found", index);
     }
+}
+
+fn search_todo(list: &mut Vec<Todo>, search: String) {
+    let mut found: bool = false;
+    let todo_lower = list
+        .iter()
+        .map(|todo| todo.name.to_lowercase())
+        .collect::<Vec<String>>();
+
+    let search_lower = search.to_lowercase();
+    for (index, todo) in list.iter().enumerate() {
+        if todo_lower.contains(&search_lower) {
+            println!(
+                "Todo found: {} at index {}",
+                todo.name,
+                // get index of list
+                index + 1
+            );
+            found = true;
+            break;
+        }
+    }
+
+    if !found {
+        println!("Todo not found");
+    }
+}
+
+fn delete_todo(list: &mut Vec<Todo>, index: usize) {
+    if index > 0 && index <= list.len() {
+        list.remove(index - 1);
+        println!("Todo {} deleted", index);
+    }
+}
+
+fn reset_todo(list: &mut Vec<Todo>) {
+    list.clear();
+    println!("All todos deleted");
 }
 
 fn read_input() -> String {
